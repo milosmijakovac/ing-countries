@@ -7,7 +7,6 @@ import CountryDetails from "./components/CountryDetails";
 
 import SearchIcon from "@mui/icons-material/Search";
 import { Routes, Route, useNavigate } from "react-router-dom";
-import { v4 as uuidv4 } from "uuid";
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
@@ -28,7 +27,6 @@ function App() {
         console.log(error);
       }
       return () => {
-        console.log("umounted");
         effectRan.current = true;
       };
     }
@@ -39,9 +37,8 @@ function App() {
   };
 
   const fetchCountries = async () => {
-    const res = await fetch("https://restcountries.com/v3.1/all");
+    const res = await fetch("https://restcountries.com/v2/all");
     const data = await res.json();
-    console.log(data);
 
     if (data.status === 404) {
       setCountries([]);
@@ -57,7 +54,7 @@ function App() {
     if (searchValue.trim()) {
       const fetchSearch = async () => {
         const res = await fetch(
-          `https://restcountries.com/v3.1/name/${searchValue}`
+          `https://restcountries.com/v2/name/${searchValue}`
         );
         const data = await res.json();
 
@@ -80,7 +77,7 @@ function App() {
     if (selectValue.trim()) {
       const fetchSelect = async () => {
         const res = await fetch(
-          `https://restcountries.com/v3.1/region/${selectValue}`
+          `https://restcountries.com/v2/region/${selectValue}`
         );
         const data = await res.json();
 
@@ -104,8 +101,8 @@ function App() {
     }
   };
 
-  const showDetails = name => {
-    navigate(`/${name}`);
+  const showDetails = code => {
+    navigate(`/${code}`);
   };
 
   return (
@@ -143,6 +140,7 @@ function App() {
                   countries.map(country => {
                     const {
                       name,
+                      alpha3Code,
                       population,
                       region,
                       capital,
@@ -150,10 +148,11 @@ function App() {
                     } = country;
                     return (
                       <Country
-                        key={uuidv4()}
+                        key={alpha3Code}
+                        code={alpha3Code}
+                        name={name}
                         darkMode={darkMode}
                         flag={png}
-                        name={name.common}
                         population={population}
                         region={region}
                         capital={capital}
@@ -169,7 +168,7 @@ function App() {
           }
         />
         <Route
-          path="/:name"
+          path="/:countryCode"
           element={
             <CountryDetails
               darkMode={darkMode}

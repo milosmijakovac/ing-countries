@@ -1,14 +1,13 @@
 import React from "react";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useParams, useNavigate } from "react-router-dom";
-import { v4 as uuidv4 } from "uuid";
 
 const CountryDetails = ({ darkMode, countries, refetch }) => {
   const params = useParams();
   const navigate = useNavigate();
   let name,
-    flag,
     nativeName,
+    flag,
     population,
     region,
     subregion,
@@ -20,19 +19,25 @@ const CountryDetails = ({ darkMode, countries, refetch }) => {
     borders = [];
 
   countries.forEach(country => {
-    if (country.name.common === params.name) {
-      name = country.name.common;
+    if (country.alpha3Code === params.countryCode) {
+      name = country.name;
+      nativeName = country.nativeName;
       flag = country.flags.png;
       population = country.population;
       region = country.region;
       subregion = country.subregion;
       capital = country.capital;
-      maps = country.maps.googleMaps;
-      borders = country.borders;
+      topLevelDomain = country.topLevelDomain;
 
-      // country?.currencies?.forEach(currency => {
-      //   currencies.push(currency)
-      // })
+      country.currencies?.forEach(currency => {
+        currencies.push(currency.name);
+      });
+      country.languages?.forEach(language => {
+        languages.push(language.name);
+      });
+      country.borders?.forEach(border => {
+        borders.push(border);
+      });
     }
   });
 
@@ -59,7 +64,7 @@ const CountryDetails = ({ darkMode, countries, refetch }) => {
               <p>
                 Native name:
                 <span className={`value ${darkMode ? "darkMode" : ""}`}>
-                  Test
+                  {nativeName}
                 </span>
               </p>
               <p>
@@ -96,15 +101,51 @@ const CountryDetails = ({ darkMode, countries, refetch }) => {
               </p>
               <p>
                 Currencies:
-                <span className={`value ${darkMode ? "darkMode" : ""}`}>
-                  {currencies}
-                </span>
+                {currencies.map(currency => {
+                  if (currencies.indexOf(currency) !== currencies.length - 1) {
+                    return (
+                      <span
+                        key={currency}
+                        className={`value ${darkMode ? "darkMode" : ""}`}
+                      >
+                        {currency}
+                      </span>
+                    );
+                  } else {
+                    return (
+                      <span
+                        key={currency}
+                        className={`value ${darkMode ? "darkMode" : ""}`}
+                      >
+                        {currency}
+                      </span>
+                    );
+                  }
+                })}
               </p>
               <p>
                 Languages:
-                <span className={`value ${darkMode ? "darkMode" : ""}`}>
-                  {languages}
-                </span>
+                {languages.map(language => {
+                  if (languages.indexOf(language) !== languages.length - 1) {
+                    return (
+                      <span
+                        key={language}
+                        className={`value ${darkMode ? "darkMode" : ""}`}
+                      >
+                        {language}
+                      </span>
+                    );
+                  } else {
+                    return (
+                      <span
+                        key={language}
+                        className={`value ${darkMode ? "darkMode" : ""}`}
+                      >
+                        {language}
+                      </span>
+                    );
+                  }
+                })}
               </p>
             </div>
           </div>
@@ -112,14 +153,14 @@ const CountryDetails = ({ darkMode, countries, refetch }) => {
           {borders?.length ? (
             borders?.map(border => (
               <div
-                key={uuidv4()}
+                key={border}
                 className={`border-country ${darkMode ? "darkMode" : ""}`}
                 onClick={() => {
                   refetch();
                   navigate(`/${border}`);
                 }}
               >
-                <p>{border}</p>
+                {border}
               </div>
             ))
           ) : (
@@ -130,7 +171,7 @@ const CountryDetails = ({ darkMode, countries, refetch }) => {
           <div className={`value ${darkMode ? "darkMode" : ""}`}>
             <a
               className="map-button"
-              target={"_blank"}
+              target="_blank"
               rel="noreferrer"
               href={maps}
             >

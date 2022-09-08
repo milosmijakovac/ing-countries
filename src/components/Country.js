@@ -1,8 +1,8 @@
 import React from "react";
 
-const Country = ({ darkMode, flag, name, population, region, capital, showDetails }) => {
+const Country = ({ darkMode, flag, name, code, population, region, capital, showDetails }) => {
 
-const showDetailsHandler = () => { showDetails(name) }
+const showDetailsHandler = () => { showDetails(code) }
 
 
   return (
